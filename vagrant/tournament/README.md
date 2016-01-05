@@ -9,6 +9,6 @@ and record player wins as well as show player standings in the table.
 
 ## How to run
 To run this app, navigate to the vagrant folder inside the downloaded file
-and run your virtual machine by typing 'vagrant up'. Next navigate to the
-tournament folder by typing cd /vagrant/tournament and then running the program
-tournament_test.py for testing.
+and run your virtual machine by typing 'vagrant up' and log in with the command
+'vagrant ssh'. Next navigate to the tournament folder by typing
+'cd /vagrant/tournament' and then running the program tournament_test.py for testing.

@@ -117,7 +117,7 @@ def swissPairings():
 
     db = psycopg2.connect("dbname=tournament")
     c = db.cursor()
-    query = "select a.player_id as id1, a.player_name as name1, b.player_id as id2, b.player_name as name2 from players as a, players as b where a.player_id < b.player_id and a.player_wins = b.player_wins order by a.player_wins, b.player_wins;"
+    query = "select a.player_id as id1, a.player_name as name1, b.player_id as id2, b.player_name as name2 from players as a, players as b where a.player_id < b.player_id and a.player_wins = b.player_wins order by a.player_id, b.player_id;"
     c.execute(query)
     return c.fetchall();
     db.close()
