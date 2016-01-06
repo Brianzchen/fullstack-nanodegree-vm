@@ -58,8 +58,8 @@ def registerPlayer(name):
 
     db = connect()
     c = db.cursor()
-    query = """insert into players (player_name)
-    values (%s);"""
+    query = """insert into players (player_name, matches)
+    values (%s, 0);"""
     c.execute(query, (name,))
     db.commit()
     db.close()
@@ -81,9 +81,9 @@ def playerStandings():
 
     db = connect()
     c = db.cursor()
-    query = """select players.player_id, players.player_name,
-    count(matches.winner) as wins from players left join matches
-    on matches.winner = players.player_id
+    query = """select players.player_id as id, players.player_name as name,
+    count(matches.winner) as wins, players.matches as matches from players
+    left join matches on matches.winner = players.player_id
     group by players.player_id;"""
     c.execute(query)
     answer = c.fetchall()
@@ -102,6 +102,10 @@ def reportMatch(winner, loser):
     db = connect()
     c = db.cursor()
     query = """insert into matches (winner, loser) values (%s, %s);"""
+    c.execute(query, (winner, loser,))
+    db.commit()
+    query = """update players set matches = matches+1 where player_id = %s
+    or player_id = %s;"""
     c.execute(query, (winner, loser,))
     db.commit()
     db.close()
@@ -125,10 +129,10 @@ def swissPairings():
 
     db = connect()
     c = db.cursor()
-    query = """select a.player_id as id1, a.player_name as name1, b.player_id
-    as id2, b.player_name as name2 from players as a, players as b
-    where a.player_id < b.player_id and a.player_wins = b.player_wins
-    order by a.player_id, b.player_id;"""
+    query = """select a.player_id, a.player_name, b.player_id, b.player_name
+    from players as a, players as b, matches as m
+    where a.player_id < b.player_id and a.matches = b.matches
+    and ;"""
     c.execute(query)
     answer = c.fetchall()
     db.close()

@@ -20,7 +20,8 @@ create database tournament;
 -- Table is craeted to hold all the players data
 create table players (
   player_id serial primary key,
-  player_name text not null
+  player_name text not null,
+  matches int not null
 );
 
 create table matches (
