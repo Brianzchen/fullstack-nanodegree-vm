@@ -8,11 +8,13 @@ import psycopg2
 
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
+
     return psycopg2.connect("dbname=tournament")
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
+
     db = connect()
     c = db.cursor()
     query = "delete from matches;"
@@ -39,8 +41,9 @@ def countPlayers():
     c = db.cursor()
     query = "select count(*) from players;"
     c.execute(query)
+    answer = c.fetchone()[0]
     db.close()
-    return c.fetchone()[0]
+    return answer
 
 
 def registerPlayer(name):
@@ -55,8 +58,8 @@ def registerPlayer(name):
 
     db = connect()
     c = db.cursor()
-    query = """insert into players (player_name, player_wins, player_matches)
-    values (%s, 0, 0);"""
+    query = """insert into players (player_name)
+    values (%s);"""
     c.execute(query, (name,))
     db.commit()
     db.close()
@@ -78,10 +81,14 @@ def playerStandings():
 
     db = connect()
     c = db.cursor()
-    query = "select * from players order by player_wins desc"
+    query = """select players.player_id, players.player_name,
+    count(matches.winner) as wins from players left join matches
+    on matches.winner = players.player_id
+    group by players.player_id;"""
     c.execute(query)
+    answer = c.fetchall()
     db.close()
-    return c.fetchall()
+    return answer
 
 
 def reportMatch(winner, loser):
@@ -94,13 +101,8 @@ def reportMatch(winner, loser):
 
     db = connect()
     c = db.cursor()
-    query = """update players set player_matches = player_matches+1 where
-    player_id = %s or player_id = %s;"""
+    query = """insert into matches (winner, loser) values (%s, %s);"""
     c.execute(query, (winner, loser,))
-    db.commit()
-    query = """update players set player_wins = player_wins+1
-    where player_id = %s;"""
-    c.execute(query, (winner,))
     db.commit()
     db.close()
 
@@ -128,5 +130,6 @@ def swissPairings():
     where a.player_id < b.player_id and a.player_wins = b.player_wins
     order by a.player_id, b.player_id;"""
     c.execute(query)
+    answer = c.fetchall()
     db.close()
-    return c.fetchall()
+    return answer
