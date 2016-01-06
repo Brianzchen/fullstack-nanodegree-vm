@@ -13,7 +13,7 @@ def connect():
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    db = psycopg2.connect("dbname=tournament")
+    db = connect()
     c = db.cursor()
     query = "delete from matches;"
     c.execute(query)
@@ -24,7 +24,7 @@ def deleteMatches():
 def deletePlayers():
     """Remove all the player records from the database."""
 
-    db = psycopg2.connect("dbname=tournament")
+    db = connect()
     c = db.cursor()
     query = "delete from players;"
     c.execute(query)
@@ -35,7 +35,7 @@ def deletePlayers():
 def countPlayers():
     """Returns the number of players currently registered."""
 
-    db = psycopg2.connect("dbname=tournament")
+    db = connect()
     c = db.cursor()
     query = "select count(*) from players;"
     c.execute(query)
@@ -53,7 +53,7 @@ def registerPlayer(name):
       name: the player's full name (need not be unique).
     """
 
-    db = psycopg2.connect("dbname=tournament")
+    db = connect()
     c = db.cursor()
     query = """insert into players (player_name, player_wins, player_matches)
     values (%s, 0, 0);"""
@@ -79,7 +79,7 @@ def playerStandings():
         matches: the number of matches the player has played
     """
 
-    db = psycopg2.connect("dbname=tournament")
+    db = connect()
     c = db.cursor()
     query = "select * from players order by player_wins desc"
     c.execute(query)
@@ -95,7 +95,7 @@ def reportMatch(winner, loser):
       loser:  the id number of the player who lost
     """
 
-    db = psycopg2.connect("dbname=tournament")
+    db = connect()
     c = db.cursor()
     query = """update players set player_matches = player_matches+1 where
     player_id = %s or player_id = %s;"""
@@ -124,7 +124,7 @@ def swissPairings():
         name2: the second player's name
     """
 
-    db = psycopg2.connect("dbname=tournament")
+    db = connect()
     c = db.cursor()
     query = """select a.player_id as id1, a.player_name as name1, b.player_id
     as id2, b.player_name as name2 from players as a, players as b
