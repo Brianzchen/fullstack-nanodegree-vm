@@ -39,8 +39,8 @@ def countPlayers():
     c = db.cursor()
     query = "select count(*) from players;"
     c.execute(query)
-    return c.fetchall()[0][0]
     db.close()
+    return c.fetchone()[0]
 
 
 def registerPlayer(name):
@@ -59,9 +59,6 @@ def registerPlayer(name):
     values (%s, 0, 0);"""
     c.execute(query, (name,))
     db.commit()
-    query = "select count(*) from players;"
-    c.execute(query)
-    return c.fetchall()[0][0]
     db.close()
 
 
@@ -83,8 +80,8 @@ def playerStandings():
     c = db.cursor()
     query = "select * from players order by player_wins desc"
     c.execute(query)
-    return c.fetchall()
     db.close()
+    return c.fetchall()
 
 
 def reportMatch(winner, loser):
@@ -131,5 +128,5 @@ def swissPairings():
     where a.player_id < b.player_id and a.player_wins = b.player_wins
     order by a.player_id, b.player_id;"""
     c.execute(query)
-    return c.fetchall()
     db.close()
+    return c.fetchall()

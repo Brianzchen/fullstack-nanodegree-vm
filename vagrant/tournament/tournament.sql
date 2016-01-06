@@ -6,6 +6,10 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+-- Checks if this database has been previously initialised and is so, deleted
+-- it and create a new one
+drop database if exists tournament;
+
 -- Initial database is created
 create database tournament;
 
@@ -19,4 +23,8 @@ create table players (
   player_name text not null,
   player_wins int not null,
   player_matches int not null
+);
+
+create table matches (
+  
 );
