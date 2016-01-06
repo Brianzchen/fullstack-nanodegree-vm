@@ -20,6 +20,7 @@ def deleteMatches():
     db.commit()
     db.close()
 
+
 def deletePlayers():
     """Remove all the player records from the database."""
 
@@ -30,6 +31,7 @@ def deletePlayers():
     db.commit()
     db.close()
 
+
 def countPlayers():
     """Returns the number of players currently registered."""
 
@@ -37,8 +39,9 @@ def countPlayers():
     c = db.cursor()
     query = "select count(*) from players;"
     c.execute(query)
-    return c.fetchall()[0][0];
+    return c.fetchall()[0][0]
     db.close()
+
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
@@ -52,19 +55,21 @@ def registerPlayer(name):
 
     db = psycopg2.connect("dbname=tournament")
     c = db.cursor()
-    query = "insert into players (player_name, player_wins, player_matches) values (%s, 0, 0);"
+    query = """insert into players (player_name, player_wins, player_matches)
+    values (%s, 0, 0);"""
     c.execute(query, (name,))
     db.commit()
     query = "select count(*) from players;"
     c.execute(query)
-    return c.fetchall()[0][0];
+    return c.fetchall()[0][0]
     db.close()
+
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
 
-    The first entry in the list should be the player in first place, or a player
-    tied for first place if there is currently a tie.
+    The first entry in the list should be the player in first place, or a
+    player tied for first place if there is currently a tie.
 
     Returns:
       A list of tuples, each of which contains (id, name, wins, matches):
@@ -78,8 +83,9 @@ def playerStandings():
     c = db.cursor()
     query = "select * from players order by player_wins desc"
     c.execute(query)
-    return c.fetchall();
+    return c.fetchall()
     db.close()
+
 
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
@@ -91,13 +97,16 @@ def reportMatch(winner, loser):
 
     db = psycopg2.connect("dbname=tournament")
     c = db.cursor()
-    query = "update players set player_matches = player_matches+1 where player_id = %s or player_id = %s;"
+    query = """update players set player_matches = player_matches+1 where
+    player_id = %s or player_id = %s;"""
     c.execute(query, (winner, loser,))
     db.commit()
-    query = "update players set player_wins = player_wins+1 where player_id = %s;"
+    query = """update players set player_wins = player_wins+1
+    where player_id = %s;"""
     c.execute(query, (winner,))
     db.commit()
     db.close()
+
 
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -117,7 +126,10 @@ def swissPairings():
 
     db = psycopg2.connect("dbname=tournament")
     c = db.cursor()
-    query = "select a.player_id as id1, a.player_name as name1, b.player_id as id2, b.player_name as name2 from players as a, players as b where a.player_id < b.player_id and a.player_wins = b.player_wins order by a.player_id, b.player_id;"
+    query = """select a.player_id as id1, a.player_name as name1, b.player_id
+    as id2, b.player_name as name2 from players as a, players as b
+    where a.player_id < b.player_id and a.player_wins = b.player_wins
+    order by a.player_id, b.player_id;"""
     c.execute(query)
-    return c.fetchall();
+    return c.fetchall()
     db.close()
