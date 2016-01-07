@@ -20,6 +20,9 @@ def deleteMatches():
     query = "delete from matches;"
     c.execute(query)
     db.commit()
+    query = "update players set matches = 0;"
+    c.execute(query)
+    db.commit()
     db.close()
 
 
