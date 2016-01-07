@@ -84,7 +84,7 @@ def playerStandings():
     query = """select players.player_id as id, players.player_name as name,
     count(matches.winner) as wins, players.matches as matches from players
     left join matches on matches.winner = players.player_id
-    group by players.player_id;"""
+    group by players.player_id order by wins desc;"""
     c.execute(query)
     answer = c.fetchall()
     db.close()
@@ -129,10 +129,12 @@ def swissPairings():
 
     db = connect()
     c = db.cursor()
-    query = """select a.player_id, a.player_name, b.player_id, b.player_name
-    from players as a, players as b, matches as m
-    where a.player_id < b.player_id and a.matches = b.matches
-    and ;"""
+
+    query = """select odd.id as id1, a.player_name as name1,
+    even.id as id2, b.player_name as name2
+    from odd_num as odd, even_num as even, players as a, players as b
+    where odd.rownum_odd = even.rownum_even and a.player_id = odd.id
+    and b.player_id = even.id;"""
     c.execute(query)
     answer = c.fetchall()
     db.close()
