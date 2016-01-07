@@ -20,9 +20,6 @@ def deleteMatches():
     query = "delete from matches;"
     c.execute(query)
     db.commit()
-    query = "update players set matches = 0;"
-    c.execute(query)
-    db.commit()
     db.close()
 
 
@@ -61,8 +58,8 @@ def registerPlayer(name):
 
     db = connect()
     c = db.cursor()
-    query = """insert into players (player_name, matches)
-    values (%s, 0);"""
+    query = """insert into players (player_name)
+    values (%s);"""
     c.execute(query, (name,))
     db.commit()
     db.close()
@@ -85,9 +82,10 @@ def playerStandings():
     db = connect()
     c = db.cursor()
     query = """select players.player_id as id, players.player_name as name,
-    count(matches.winner) as wins, players.matches as matches from players
-    left join matches on matches.winner = players.player_id
-    group by players.player_id order by wins desc;"""
+    wins.wins as wins, count.matches as matches
+    from players, match_wins as wins, match_count as count
+    where players.player_id = wins.id and players.player_id = count.id
+    order by wins desc;"""
     c.execute(query)
     answer = c.fetchall()
     db.close()
@@ -105,10 +103,6 @@ def reportMatch(winner, loser):
     db = connect()
     c = db.cursor()
     query = """insert into matches (winner, loser) values (%s, %s);"""
-    c.execute(query, (winner, loser,))
-    db.commit()
-    query = """update players set matches = matches+1 where player_id = %s
-    or player_id = %s;"""
     c.execute(query, (winner, loser,))
     db.commit()
     db.close()

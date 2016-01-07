@@ -20,8 +20,7 @@ create database tournament;
 -- Table is craeted to hold all the players data
 create table players (
   player_id serial primary key,
-  player_name text not null,
-  matches int not null
+  player_name text not null
 );
 
 -- Table is created to hold match history data
@@ -30,6 +29,20 @@ create table matches (
   winner int references players(player_id),
   loser int references players(player_id)
 );
+
+-- Counts how many matches players have played
+create view match_count as
+  select players.player_id as id,
+  count(players.player_id = matches.winner or players.player_id = matches.loser)
+  as matches from players left join matches on matches.winner = players.player_id
+  or matches.loser = players.player_id group by players.player_id;
+
+-- Counts how many wins  players have
+create view match_wins as
+  select players.player_id as id,
+  count(matches.winner) as wins
+  from players left join matches on matches.winner = players.player_id
+  group by players.player_id;
 
 -- This view finds the current player ranking and returns it as a table
 -- with their ids and wins
