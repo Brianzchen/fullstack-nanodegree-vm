@@ -8,27 +8,25 @@ from sqlalchemy import create_engine
 Base = declarative_base()
 
 
-class Restaurant(Base):
-    __tablename__ = 'restaurant'
+class Catagory(Base):
+    __tablename__ = 'catagory'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
 
 
-class MenuItem(Base):
-    __tablename__ = 'menu_item'
+class Item(Base):
+    __tablename__ = 'item'
 
-    name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
+    name = Column(String(80), nullable=False)
     description = Column(String(250))
-    price = Column(String(8))
-    course = Column(String(250))
-    restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
-    restaurant = relationship(Restaurant)
+    image = Column(String(250))
+    catagory_id = Column(Integer, ForeignKey('catagory.id'))
+    catagory = relationship(Catagory)
 
-    
 
-engine = create_engine('sqlite:///restaurantmenu.db')
+engine = create_engine('sqlite:///itemlist.db')
 
 
 Base.metadata.create_all(engine)
