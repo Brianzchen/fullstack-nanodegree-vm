@@ -1,8 +1,26 @@
 <html>
   <head>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
   </haed>
 
-  <body>
-    <h1>Catalog App</h1>
+  <body class="container">
+    <header class="row padding">
+      <h1 class="col-6">Catalog App</h1>
+      <div class="col-6">
+        <button class="login-button">Login</button>
+      </div>
+    </header>
+
+    <main class="row padding">
+      <div class="col-5">
+        <h2>Catagories</h2>
+      </div>
+
+      <div class="col-7">
+        <h2>Latest Items</h2>
+      </div>
+    <main>
+
   </body>
 </html>
