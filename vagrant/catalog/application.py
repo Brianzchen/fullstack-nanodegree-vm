@@ -4,7 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Catagory, Item
 # Imports for anti session tokens
 from flask import session as login_session
-import random, string
+import random
+import string
 # Imports for loggin in
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -25,18 +26,29 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
 @app.route('/')
 @app.route('/home/')
 def home_page():
-    return render_template('homepage.html')
+    credentials = login_session.get('credentials')
+    print(credentials)
+    return render_template('homepage.html', credentials=credentials)
+
 
 @app.route('/login/')
 def login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
-    return render_template('login.html', state = state)
+    return render_template('login.html', state=state)
 
+
+@app.route('/delete/')
+def delete():
+    return render_template('delete.html')
+
+
+# Logs in a user
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -88,8 +100,8 @@ def gconnect():
     stored_credentials = login_session.get('credentials')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_credentials is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps('''Current user is already
+        connected.'''), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -114,16 +126,47 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
+    output += ''' " style = "width: 300px; height: 300px;border-radius:
+    150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '''
     print "done!"
     return output
 
-@app.route('/delete/')
-def delete():
-    return render_template('delete.html')
+
+# Logs the user out
+@app.route('/gdisconnect')
+def gdisconnect():
+    access_token = login_session['credentials'].access_token
+    print 'In gdisconnect access token is %s' % access_token
+    print 'User name is: '
+    print login_session['username']
+    if access_token is None:
+        print 'Access Token is None'
+    	response = make_response(json.dumps('Current user not connected.'),
+        401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['credentials'].access_token
+    print url
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+    print 'result is '
+    print result
+    if result['status'] == '200':
+        del login_session['credentials']
+        del login_session['gplus_id']
+        del login_session['username']
+    	del login_session['email']
+    	del login_session['picture']
+    	response = make_response(json.dumps('Successfully disconnected.'), 200)
+    	response.headers['Content-Type'] = 'application/json'
+    	return redirect('/')
+    else:
+    	response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+    	response.headers['Content-Type'] = 'application/json'
+    	return response
+
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
+    app.secret_key = 'zUApyycp2Hn9W4lekdEGTWmR'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)

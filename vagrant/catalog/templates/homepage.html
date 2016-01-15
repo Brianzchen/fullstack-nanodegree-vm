@@ -8,13 +8,21 @@
     <header class="padding row80">
       <h1 class="col-6"><a href="{{url_for('home_page')}}">Catalog App</a></h1>
       <div class="col-6">
-        <a href="{{url_for('login')}}"><button class="login-button">Login</button></a>
+        {% if credentials == None %}
+          <a href="{{url_for('login')}}"><button class="login-button">Login</button></a>
+        {% endif %}
+        {% if credentials != None %}
+          <a href="{{url_for('gdisconnect')}}"><button class="login-button">Logout</button></a>
+        {% endif %}
       </div>
     </header>
 
     <main class="margin main-div row80">
       <div class="col-5">
         <h2 class="left10">Catagories</h2>
+        {% if credentials != None %}
+          <a href="#" class="left10">Add a new catagory</a>
+        {% endif %}
         <ul class="list-no-marks left10">
           <li class="click-list">test1</li>
           <li class="click-list">test2</li>
@@ -25,6 +33,9 @@
 
       <div class="col-7 border-left">
         <h2 class="left10">Latest Items</h2>
+        {% if credentials != None %}
+          <a href="#" class="left10">Add an item</a>
+        {% endif %}
         <ul class="list-no-marks left10">
           <li class="click-list">test1 <i class="catagory-ref">(catagory)</i></li>
           <li class="click-list">test2 <i class="catagory-ref">(catagory)</i></li>
