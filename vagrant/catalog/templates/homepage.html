@@ -4,23 +4,34 @@
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
   </haed>
 
-  <body class="container">
-    <header class="row padding">
-      <h1 class="col-6">Catalog App</h1>
+  <body class="container body-background">
+    <header class="padding row80">
+      <h1 class="col-6"><a href="{{url_for('home_page')}}">Catalog App</a></h1>
       <div class="col-6">
-        <button class="login-button">Login</button>
+        <a href="{{url_for('login')}}"><button class="login-button">Login</button></a>
       </div>
     </header>
 
-    <main class="row padding">
+    <main class="margin main-div row80">
       <div class="col-5">
-        <h2>Catagories</h2>
+        <h2 class="left10">Catagories</h2>
+        <ul class="list-no-marks left10">
+          <li class="click-list">test1</li>
+          <li class="click-list">test2</li>
+          <li class="click-list">test3</li>
+          <li class="click-list">test4</li>
+        </ul>
       </div>
 
-      <div class="col-7">
-        <h2>Latest Items</h2>
+      <div class="col-7 border-left">
+        <h2 class="left10">Latest Items</h2>
+        <ul class="list-no-marks left10">
+          <li class="click-list">test1 <i class="catagory-ref">(catagory)</i></li>
+          <li class="click-list">test2 <i class="catagory-ref">(catagory)</i></li>
+          <li class="click-list">test3 <i class="catagory-ref">(catagory)</i></li>
+          <li class="click-list">test4 <i class="catagory-ref">(catagory)</i></li>
+        </ul>
       </div>
     <main>
-
   </body>
 </html>

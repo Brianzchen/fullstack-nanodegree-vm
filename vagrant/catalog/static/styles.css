@@ -58,8 +58,37 @@
 }
 
 /* Generic styles */
+*  {
+  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+a {
+  color: inherit; /* blue colors for links too */
+  text-decoration: inherit; /* no underline */
+}
+
+.body-background {
+  background-color: #a8a8a8
+}
+
 .padding {
-  padding: 10px 10% 10px 10%;
+  padding: 10px 10%;
+}
+
+.margin {
+  margin: 10px 10%;
+  margin-right: 100px;
+}
+
+.row80 {
+  display: flex;
+  flex-wrap: wrap;
+  width: 80%;
+}
+
+.left10 {
+  position: relative;
+  left: 10%;
 }
 
 /* Header styles */
@@ -99,9 +128,9 @@ h1 {
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffee66;
-  margin: 0 25% 0 auto;
+  float: right;
   width: 100px;
-  display: block;
+  outline: none;
 }
 
 .login-button:hover {
@@ -118,4 +147,33 @@ h1 {
 .login-button:active {
 	position:relative;
 	top:1px;
+}
+
+/* Main area styles */
+h2 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.main-div {
+  background-color: #FFF;
+  border-style: groove;
+  border-width: 2px;
+}
+
+.list-no-marks {
+  list-style-type: none;
+  padding: 0;
+}
+
+.click-list {
+  font-size: 17px;
+}
+
+.catagory-ref {
+  color: #a8a8a8
+}
+
+/* Delete html style */
+.delete-main {
+  padding: 0 0 20px 20px;
 }
