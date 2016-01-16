@@ -8,16 +8,19 @@
     <header class="padding row80">
       <h1 class="col-6"><a href="{{url_for('home_page')}}">Catalog App</a></h1>
       <div class="col-6">
-        <a href="{{url_for('login')}}"><button class="login-button">Login</button></a>
+        {% if credentials != None %}
+          <a href="{{url_for('gdisconnect')}}"><button class="login-button">Logout</button></a>
+          <p class="greeting">Welcome back, {{username}}</p>
+        {% endif %}
       </div>
     </header>
 
-    <main class="margin main-div row80 delete-main">
-      <h2 class="col-12">Delete Item</h2>
+    <main class="margin main-div row80 single-main">
+      <h2 class="col-12">Delete {{item.name}}</h2>
       <p class="col-12">Are you sure you want to delete this item?</p>
-      <div class="col-12">
-        <button>Submit</button>
-      </div>
+      <form action="{{url_for('delete_item', item_id=item.id)}}" method="post" class="col-12">
+        <input type="submit" value="Submit">
+      </form>
     <main>
   </body>
 </html>

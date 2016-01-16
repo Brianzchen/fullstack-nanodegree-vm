@@ -29,13 +29,15 @@
       </div>
 
       <div class="col-7 border-left">
-        <h2 class="left10">Latest Items</h2>
+        <h2 class="left10">{{catagory.name}} Items</h2>
         {% if credentials != None %}
           <a href="{{url_for('add_item')}}" class="left10">Add an item</a>
         {% endif %}
         <ul class="list-no-marks left10">
           {% for i in items %}
-            <li class="click-list"><a href="{{url_for('read_item', item_id=i.id)}}">{{i.name}}</a> <i class="catagory-ref">({{i.catagory_id}})</i></li>
+            {% if i.catagory_id == catagory.id %}
+              <li class="click-list"><a href="{{url_for('read_item', item_id=i.id)}}">{{i.name}}</a> <i class="catagory-ref">({{i.catagory_id}})</i></li>
+            {% endif %}
           {% endfor %}
         </ul>
       </div>

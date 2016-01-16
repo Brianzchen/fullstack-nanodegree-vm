@@ -37,6 +37,27 @@ def home_page():
     return render_template('homepage.html', credentials=credentials, username=username, catagories=catagories, items=items)
 
 
+@app.route('/<int:catagory_id>/view/')
+def home_page_single(catagory_id):
+    credentials = login_session.get('credentials')
+    username = login_session.get('username')
+    catagory = session.query(Catagory).filter_by(id=catagory_id).one()
+    catagories = session.query(Catagory).all()
+    items = session.query(Item).all()
+    return render_template('homepagesingle.html', catagory=catagory,
+    catagories=catagories, credentials=credentials, username=username,
+    items=items)
+
+
+@app.route('/<int:item_id>/read/')
+def read_item(item_id):
+    credentials = login_session.get('credentials')
+    username = login_session.get('username')
+    item = session.query(Item).filter_by(id=item_id).one()
+    return render_template('readitem.html', item=item, username=username,
+    credentials=credentials)
+
+
 @app.route('/login/')
 def login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -52,7 +73,7 @@ def add_item():
     return render_template('additem.html')
 
 
-@app.route('/add-item/', methods=['GET', 'POST'])
+@app.route('/add-new-item/', methods=['GET', 'POST'])
 def newItem():
     if login_session.get('credentials') is None:
         return redirect('/')
@@ -66,9 +87,25 @@ def newItem():
     else:
         return render_template('additem.html')
 
-@app.route('/delete/')
-def delete():
-    return render_template('delete.html')
+
+@app.route('/<int:item_id>/delete/')
+def delete(item_id):
+    credentials = login_session.get('credentials')
+    username = login_session.get('username')
+    item = session.query(Item).filter_by(id=item_id).one()
+    return render_template('delete.html', credentials=credentials,
+    username=username, item=item)
+
+
+@app.route('/<int:item_id>/delete/', methods=['GET', 'POST'])
+def delete_item(item_id):
+    itemToDelete = session.query(Item).filter_by(id=item_id).one()
+    if request.method == 'POST':
+        session.delete(itemToDelete)
+        session.commit()
+        return redirect('/')
+    else:
+        return render_template(url_for('delete.html', item_id=item_id))
 
 
 # Logs in a user

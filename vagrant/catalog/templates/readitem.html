@@ -16,17 +16,11 @@
     </header>
 
     <main class="margin main-div row80 single-main">
-      <h2 class="col-12">Add an Item</h2>
-
-      <form action="{{ url_for('newItem')}}" method = 'post'>
-      	<label>Name: </label><input type ='text' size='30' name='name'>
-        <br>
-        <label>Description: </label><input type ='text' size='30' name='name'>
-
-
-      <input type='submit' value='Create'>
-
-      </form>
+      <h2 class="col-12">{{item.name}}</h2>
+      <p class="col-12">{{item.description}}</p>
+      {% if credentials != None %}
+        <p><a href="">Edit</a> | <a href="{{url_for('delete', item_id=item.id)}}">Delete</a></p>
+      {% endif %}
     <main>
   </body>
 </html>
