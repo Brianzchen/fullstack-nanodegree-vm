@@ -18,6 +18,16 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
+# Deletes all the old data from the database
+catagories = session.query(Catagory).all()
+for c in catagories:
+    session.delete(c)
+    session.commit()
+
+items = session.query(Item).all()
+for i in items:
+    session.delete(i)
+    session.commit()
 
 # Items for Soccer
 catagory1 = Catagory(name="Soccer")

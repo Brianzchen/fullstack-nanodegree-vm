@@ -88,12 +88,36 @@ def newItem():
         return render_template('additem.html')
 
 
+@app.route('/<int:item_id>/edit/')
+def edit(item_id):
+    credentials = login_session.get('credentials')
+    username = login_session.get('username')
+    item = session.query(Item).filter_by(id=item_id).one()
+    return render_template('edititem.html', credentials=credentials,
+    username=username, item=item)
+
+
+@app.route('/<int:item_id>/edit/', methods=['GET', 'POST'])
+def edit_item(item_id):
+    itemToEdit = session.query(Item).filter_by(id=item_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            itemToEdit.name = request.form['name']
+        if request.form['description']:
+            itemToEdit.description = request.form['description']
+        session.add(itemToEdit)
+        session.commit()
+        return redirect(url_for('read_item', item_id=item_id))
+    else:
+        return render_template(url_for('edititem.html', item_id=item_id))
+
+
 @app.route('/<int:item_id>/delete/')
 def delete(item_id):
     credentials = login_session.get('credentials')
     username = login_session.get('username')
     item = session.query(Item).filter_by(id=item_id).one()
-    return render_template('delete.html', credentials=credentials,
+    return render_template('deleteitem.html', credentials=credentials,
     username=username, item=item)
 
 
@@ -105,7 +129,7 @@ def delete_item(item_id):
         session.commit()
         return redirect('/')
     else:
-        return render_template(url_for('delete.html', item_id=item_id))
+        return render_template(url_for('deleteitem.html', item_id=item_id))
 
 
 # Logs in a user
