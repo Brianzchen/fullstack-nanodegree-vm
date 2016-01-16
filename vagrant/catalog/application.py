@@ -31,8 +31,10 @@ session = DBSession()
 @app.route('/home/')
 def home_page():
     credentials = login_session.get('credentials')
-    print(credentials)
-    return render_template('homepage.html', credentials=credentials)
+    username = login_session.get('username')
+    catagories = session.query(Catagory).all()
+    items = session.query(Item).all()
+    return render_template('homepage.html', credentials=credentials, username=username, catagories=catagories, items=items)
 
 
 @app.route('/login/')
@@ -42,6 +44,27 @@ def login():
     login_session['state'] = state
     return render_template('login.html', state=state)
 
+
+@app.route('/add-item/')
+def add_item():
+    if login_session.get('credentials') is None:
+        return redirect('/')
+    return render_template('additem.html')
+
+
+@app.route('/add-item/', methods=['GET', 'POST'])
+def newItem():
+    if login_session.get('credentials') is None:
+        return redirect('/')
+    if request.method == 'POST':
+        newItem = Item(name=request.form['name'], description=request.form[
+                           'description'], image=request.form['image'], catagory_id=request.form['catagory_id'])
+        session.add(newItem)
+        session.commit()
+        flash("new item created!")
+        return redirect('/')
+    else:
+        return render_template('additem.html')
 
 @app.route('/delete/')
 def delete():

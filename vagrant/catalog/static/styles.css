@@ -91,6 +91,10 @@ header a {
   left: 10%;
 }
 
+.single-main {
+  padding: 0 0 20px 20px;
+}
+
 /* Header styles */
 header {
   background-color: #294860;
@@ -100,6 +104,12 @@ h1 {
   margin: 0;
   color: white;
   font-family: 'Montserrat', sans-serif;
+}
+
+.greeting {
+  color: #fff;
+  float: right;
+  margin: 8px 0 0 0;
 }
 
 /* Styling for the login button */
@@ -173,7 +183,8 @@ h2 {
   color: #a8a8a8
 }
 
-/* Delete html style */
-.delete-main {
-  padding: 0 0 20px 20px;
+@media screen and (min-width: 734px) {
+  .greeting {
+    margin-right: 8px;
+  }
 }

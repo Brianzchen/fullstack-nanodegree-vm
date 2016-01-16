@@ -13,6 +13,7 @@
         {% endif %}
         {% if credentials != None %}
           <a href="{{url_for('gdisconnect')}}"><button class="login-button">Logout</button></a>
+          <p class="greeting">Welcome back, {{username}}</p>
         {% endif %}
       </div>
     </header>
@@ -20,27 +21,22 @@
     <main class="margin main-div row80">
       <div class="col-5">
         <h2 class="left10">Catagories</h2>
-        {% if credentials != None %}
-          <a href="#" class="left10">Add a new catagory</a>
-        {% endif %}
         <ul class="list-no-marks left10">
-          <li class="click-list">test1</li>
-          <li class="click-list">test2</li>
-          <li class="click-list">test3</li>
-          <li class="click-list">test4</li>
+          {% for catagory in catagories %}
+            <li class="click-list">{{catagory.name}}</li>
+          {% endfor %}
         </ul>
       </div>
 
       <div class="col-7 border-left">
         <h2 class="left10">Latest Items</h2>
         {% if credentials != None %}
-          <a href="#" class="left10">Add an item</a>
+          <a href="{{url_for('add_item')}}" class="left10">Add an item</a>
         {% endif %}
         <ul class="list-no-marks left10">
-          <li class="click-list">test1 <i class="catagory-ref">(catagory)</i></li>
-          <li class="click-list">test2 <i class="catagory-ref">(catagory)</i></li>
-          <li class="click-list">test3 <i class="catagory-ref">(catagory)</i></li>
-          <li class="click-list">test4 <i class="catagory-ref">(catagory)</i></li>
+          {% for i in items %}
+            <li class="click-list">{{i.name}} <i class="catagory-ref">({{i.catagory_id}})</i></li>
+          {% endfor %}
         </ul>
       </div>
     <main>

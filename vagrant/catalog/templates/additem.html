@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+  </haed>
+
+  <body class="container body-background">
+    <header class="padding row80">
+      <h1 class="col-6"><a href="{{url_for('home_page')}}">Catalog App</a></h1>
+      <div class="col-6">
+        {% if credentials != None %}
+          <a href="{{url_for('gdisconnect')}}"><button class="login-button">Logout</button></a>
+          <p class="greeting">Welcome back, {{username}}</p>
+        {% endif %}
+      </div>
+    </header>
+
+    <main class="margin main-div row80 single-main">
+      <h2 class="col-12">Add an Item</h2>
+
+      <form action="{{ url_for('newItem')}}" method = 'post'>
+      	<label>Name: </label><input type ='text' size='30' name='name'>
+        <label>Description: </label><input type ='text' size='30' name='name'>
+
+
+      <input type='submit' value='Create'>
+
+      </form>
+    <main>
+  </body>
+</html>
