@@ -24,3 +24,8 @@ localhost:8000/<category-id>/items/JSON
 or
 localhost:8000/category/item/<item-id>/JSON
 replacing <category-id> or <item-id> with the id of your desired category or id
+
+### Known flask version bug
+
+The OAuth code has a bug which requires you to run the command "sudo pip install flask==0.9"
+if you are not able to log in and are not running the version of Flask that I was

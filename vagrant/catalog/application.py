@@ -91,7 +91,9 @@ def read_item(item_id):
     credentials = login_session.get('credentials')
     username = login_session.get('username')
     item = session.query(Item).filter_by(id=item_id).one()
-    user_id = login_session['user_id']
+    user_id = None
+    if login_session.get('user_id') != None:
+        user_id = login_session.get('user_id')
     return render_template('readitem.html', item=item, username=username,
                            credentials=credentials, user_id=user_id)
 # ---------------------------------------------------------------------------
@@ -106,7 +108,8 @@ def add_item():
     username = login_session.get('username')
     catagories = session.query(Category).all()
     if login_session.get('credentials') is None:
-        return redirect('/')
+        flash("Please login before you add items")
+        return redirect(url_for('login'))
     return render_template('additem.html', credentials=credentials,
                            username=username, catagories=catagories)
 
@@ -115,7 +118,8 @@ def add_item():
 @app.route('/add-item/', methods=['GET', 'POST'])
 def newItem():
     if login_session.get('credentials') is None:
-        return redirect('/')
+        flash("Please login before you add items")
+        return redirect(url_for('login'))
     if request.method == 'POST':
         newItem = Item(name=request.form['name'], description=request.form[
                        'description'],
@@ -138,7 +142,8 @@ def edit(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     if (login_session.get('credentials') is None or
             item.user_id != login_session['user_id']):
-        return redirect('/')
+        flash("You are either not logged in you do not have ownership of this item")  # noqa
+        return redirect(url_for('login'))
     credentials = login_session.get('credentials')
     username = login_session.get('username')
     return render_template('edititem.html', credentials=credentials,
@@ -151,7 +156,8 @@ def edit_item(item_id):
     itemToEdit = session.query(Item).filter_by(id=item_id).one()
     if (login_session.get('credentials') is None or
             itemToEdit.user_id != login_session['user_id']):
-        return redirect('/')
+        flash("You are either not logged in you do not have ownership of this item")  # noqa
+        return redirect(url_for('login'))
     if request.method == 'POST':
         if request.form['name']:
             itemToEdit.name = request.form['name']
@@ -174,7 +180,8 @@ def delete(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     if (login_session.get('credentials') is None or
             item.user_id != login_session['user_id']):
-        return redirect('/')
+        flash("You are either not logged in you do not have ownership of this item")  # noqa
+        return redirect(url_for('login'))
     credentials = login_session.get('credentials')
     username = login_session.get('username')
     return render_template('deleteitem.html', credentials=credentials,
@@ -187,7 +194,8 @@ def delete_item(item_id):
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
     if (login_session.get('credentials') is None or
             itemToDelete.user_id != login_session['user_id']):
-        return redirect('/')
+        flash("You are either not logged in you do not have ownership of this item")  # noqa
+        return redirect(url_for('login'))
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
