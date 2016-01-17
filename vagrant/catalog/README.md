@@ -20,7 +20,7 @@ localhost:8000/ to run the hosted website
 ### How to JSONify
 
 If you the data to be shown as json text, simply navigate to either of the following:
-localhost:8000/<catagory-id>/items/JSON
+localhost:8000/<category-id>/items/JSON
 or
-localhost:8000/catagory/item/<item-id>/JSON
-replacing <catagory-id> or <item-id> with the id of your desired category or id
+localhost:8000/category/item/<item-id>/JSON
+replacing <category-id> or <item-id> with the id of your desired category or id
