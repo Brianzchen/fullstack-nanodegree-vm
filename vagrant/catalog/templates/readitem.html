@@ -8,6 +8,9 @@
     <header class="padding row80">
       <h1 class="col-6"><a href="{{url_for('home_page')}}">Catalog App</a></h1>
       <div class="col-6">
+        {% if credentials == None %}
+          <a href="{{url_for('login')}}"><button class="login-button">Login</button></a>
+        {% endif %}
         {% if credentials != None %}
           <a href="{{url_for('gdisconnect')}}"><button class="login-button">Logout</button></a>
           <p class="greeting">Welcome back, {{username}}</p>
@@ -15,11 +18,24 @@
       </div>
     </header>
 
+    <div class="flashes">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+              <li><strong>{{message}}</strong></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+
     <main class="margin main-div row80 single-main">
       <h2 class="col-12">{{item.name}}</h2>
       <p class="col-12">{{item.description}}</p>
       {% if credentials != None %}
-        <p><a href="{{url_for('edit', item_id=item.id)}}">Edit</a> | <a href="{{url_for('delete', item_id=item.id)}}">Delete</a></p>
+        {% if user_id == item.user_id %}
+          <p><a href="{{url_for('edit', item_id=item.id)}}">Edit</a> | <a href="{{url_for('delete', item_id=item.id)}}">Delete</a></p>
+        {% endif %}
       {% endif %}
     <main>
   </body>

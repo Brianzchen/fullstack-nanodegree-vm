@@ -18,6 +18,17 @@
       </div>
     </header>
 
+    <div class="flashes">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+              <li><strong>{{message}}</strong></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+
     <main class="margin main-div row80">
       <div class="col-5">
         <h2 class="left10">Catagories</h2>

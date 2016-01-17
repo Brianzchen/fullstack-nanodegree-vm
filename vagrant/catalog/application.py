@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for
+from flask import session as login_session, flash, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Catagory, Item
-# Imports for anti session tokens
-from flask import session as login_session
+from database_setup import Base, Catagory, Item, User
 import random
 import string
 # Imports for loggin in
@@ -27,6 +26,34 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+# User helper functions for tracking the user
+# ---------------------------------------------------------------------------
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+# ---------------------------------------------------------------------------
+
+
+# Read related routes
+# ---------------------------------------------------------------------------
+# The main home page
 @app.route('/')
 @app.route('/home/')
 def home_page():
@@ -34,9 +61,12 @@ def home_page():
     username = login_session.get('username')
     catagories = session.query(Catagory).all()
     items = session.query(Item).all()
-    return render_template('homepage.html', credentials=credentials, username=username, catagories=catagories, items=items)
+    return render_template('homepage.html', credentials=credentials,
+                           username=username, catagories=catagories,
+                           items=items)
 
 
+# For vewing items in each catagory
 @app.route('/<int:catagory_id>/view/')
 def home_page_single(catagory_id):
     credentials = login_session.get('credentials')
@@ -45,61 +75,77 @@ def home_page_single(catagory_id):
     catagories = session.query(Catagory).all()
     items = session.query(Item).all()
     return render_template('homepagesingle.html', catagory=catagory,
-    catagories=catagories, credentials=credentials, username=username,
-    items=items)
+                           catagories=catagories, credentials=credentials,
+                           username=username, items=items)
 
 
+# Read an individual item
 @app.route('/<int:item_id>/read/')
 def read_item(item_id):
     credentials = login_session.get('credentials')
     username = login_session.get('username')
     item = session.query(Item).filter_by(id=item_id).one()
+    user_id = login_session['user_id']
     return render_template('readitem.html', item=item, username=username,
-    credentials=credentials)
+                           credentials=credentials, user_id=user_id)
+# ---------------------------------------------------------------------------
 
 
-@app.route('/login/')
-def login():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in xrange(32))
-    login_session['state'] = state
-    return render_template('login.html', state=state)
-
-
+# Item adding related routes
+# ---------------------------------------------------------------------------
+# Loads page for adding an item
 @app.route('/add-item/')
 def add_item():
+    credentials = login_session.get('credentials')
+    username = login_session.get('username')
+    catagories = session.query(Catagory).all()
     if login_session.get('credentials') is None:
         return redirect('/')
-    return render_template('additem.html')
+    return render_template('additem.html', credentials=credentials,
+                           username=username, catagories=catagories)
 
 
-@app.route('/add-new-item/', methods=['GET', 'POST'])
+# Post request for adding an item
+@app.route('/add-item/', methods=['GET', 'POST'])
 def newItem():
     if login_session.get('credentials') is None:
         return redirect('/')
     if request.method == 'POST':
         newItem = Item(name=request.form['name'], description=request.form[
-                           'description'], image=request.form['image'], catagory_id=request.form['catagory_id'])
+                       'description'],
+                       catagory_id=request.form['catagory_id'],
+                       user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
-        flash("new item created!")
+        flash("New item created!")
         return redirect('/')
     else:
         return render_template('additem.html')
+# ---------------------------------------------------------------------------
 
 
+# Edit related routes
+# ---------------------------------------------------------------------------
+# Lods edit page for an item
 @app.route('/<int:item_id>/edit/')
 def edit(item_id):
+    item = session.query(Item).filter_by(id=item_id).one()
+    if (login_session.get('credentials') is None or
+            item.user_id != login_session['user_id']):
+        return redirect('/')
     credentials = login_session.get('credentials')
     username = login_session.get('username')
-    item = session.query(Item).filter_by(id=item_id).one()
     return render_template('edititem.html', credentials=credentials,
-    username=username, item=item)
+                           username=username, item=item)
 
 
+# Post request for editing an item
 @app.route('/<int:item_id>/edit/', methods=['GET', 'POST'])
 def edit_item(item_id):
     itemToEdit = session.query(Item).filter_by(id=item_id).one()
+    if (login_session.get('credentials') is None or
+            itemToEdit.user_id != login_session['user_id']):
+        return redirect('/')
     if request.method == 'POST':
         if request.form['name']:
             itemToEdit.name = request.form['name']
@@ -107,29 +153,73 @@ def edit_item(item_id):
             itemToEdit.description = request.form['description']
         session.add(itemToEdit)
         session.commit()
+        flash("Your item has successfully been modified!")
         return redirect(url_for('read_item', item_id=item_id))
     else:
         return render_template(url_for('edititem.html', item_id=item_id))
+# ---------------------------------------------------------------------------
 
 
+# Delete related routes
+# ---------------------------------------------------------------------------
+# Loads delete page for an item
 @app.route('/<int:item_id>/delete/')
 def delete(item_id):
+    item = session.query(Item).filter_by(id=item_id).one()
+    if (login_session.get('credentials') is None or
+            item.user_id != login_session['user_id']):
+        return redirect('/')
     credentials = login_session.get('credentials')
     username = login_session.get('username')
-    item = session.query(Item).filter_by(id=item_id).one()
     return render_template('deleteitem.html', credentials=credentials,
-    username=username, item=item)
+                           username=username, item=item)
 
 
+# Post request for deleting an item
 @app.route('/<int:item_id>/delete/', methods=['GET', 'POST'])
 def delete_item(item_id):
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
+    if (login_session.get('credentials') is None or
+            itemToDelete.user_id != login_session['user_id']):
+        return redirect('/')
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
+        flash("""You have successfully deleted the item, hope you
+                don't regret it!""")
         return redirect('/')
     else:
         return render_template(url_for('deleteitem.html', item_id=item_id))
+# ---------------------------------------------------------------------------
+
+
+# Routes for JSONify requests
+# ---------------------------------------------------------------------------
+# Looking up the JSON for every item in a catagory
+@app.route('/<int:catagory_id>/items/JSON')
+def catagoryItemJSON(catagory_id):
+    catagory = session.query(Catagory).filter_by(id=catagory_id).one()
+    items = session.query(Item).filter_by(catagory_id=catagory.id).all()
+    return jsonify(Item=[i.serialize for i in items])
+
+
+# Looking up a single item
+@app.route('/catagory/item/<int:item_id>/JSON')
+def ItemJSON(item_id):
+    item = session.query(Item).filter_by(id=item_id).one()
+    return jsonify(Item=item.serialize)
+# ---------------------------------------------------------------------------
+
+
+# Account related routes
+# ---------------------------------------------------------------------------
+# The main login page
+@app.route('/login/')
+def login():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    login_session['state'] = state
+    return render_template('login.html', state=state)
 
 
 # Logs in a user
@@ -204,6 +294,12 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    # Checks if user exists and if not create a new user for that email
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -226,10 +322,10 @@ def gdisconnect():
     if access_token is None:
         print 'Access Token is None'
     	response = make_response(json.dumps('Current user not connected.'),
-        401)
+                                 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['credentials'].access_token
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['credentials'].access_token  # noqa
     print url
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
@@ -239,18 +335,20 @@ def gdisconnect():
         del login_session['credentials']
         del login_session['gplus_id']
         del login_session['username']
-    	del login_session['email']
-    	del login_session['picture']
-    	response = make_response(json.dumps('Successfully disconnected.'), 200)
-    	response.headers['Content-Type'] = 'application/json'
-    	return redirect('/')
+        del login_session['email']
+        del login_session['picture']
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return redirect('/')
     else:
-    	response = make_response(json.dumps('Failed to revoke token for given user.', 400))
-    	response.headers['Content-Type'] = 'application/json'
-    	return response
+        response = make_response(json.dumps(
+                            'Failed to revoke token for given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
+# ---------------------------------------------------------------------------
 
 
 if __name__ == '__main__':
-    app.secret_key = 'zUApyycp2Hn9W4lekdEGTWmR'
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)

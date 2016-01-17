@@ -36,14 +36,15 @@ session.add(catagory1)
 session.commit()
 
 item1 = Item(name="Soccer ball", description="A ball for kicking around",
-                     catagory=catagory1)
+             catagory=catagory1)
 
 session.add(item1)
 session.commit()
 
 
-item1 = Item(name="Soccer cleats", description="Gives optimum grip when running around a field",
-                     catagory=catagory1)
+item1 = Item(name="Soccer cleats",
+             description="Gives optimum grip when running around a field",
+             catagory=catagory1)
 
 session.add(item1)
 session.commit()
@@ -56,14 +57,16 @@ session.add(catagory1)
 session.commit()
 
 
-item1 = Item(name="Snowboard", description="The bread and butter of the sport. The board you ride as you go down the mountains",
-                     catagory=catagory1)
+item1 = Item(name="Snowboard",
+             description="The bread and butter of the sport. The board you ride as you go down the mountains",  # noqa
+             catagory=catagory1)
 
 session.add(item1)
 session.commit()
 
-item1 = Item(
-    name="Goggles", description="Protects the user from so much in life, the refelction of the sun and the ice and you shred like a madman down the slopes", catagory=catagory1)
+item1 = Item(name="Goggles",
+             description="Protects the user from so much in life, the refelction of the sun and the ice and you shred like a madman down the slopes",  # noqa
+             catagory=catagory1)
 
 session.add(item1)
 session.commit()
