@@ -61,22 +61,28 @@ def home_page():
     username = login_session.get('username')
     catagories = session.query(Catagory).all()
     items = session.query(Item).all()
+    for i in items:
+        for c in catagories:
+            if i.catagory_id == c.id:
+                i.catagory_name = c.name
     return render_template('homepage.html', credentials=credentials,
                            username=username, catagories=catagories,
                            items=items)
 
 
 # For vewing items in each catagory
-@app.route('/<int:catagory_id>/view/')
+@app.route('/<int:catagory_id>/')
 def home_page_single(catagory_id):
     credentials = login_session.get('credentials')
     username = login_session.get('username')
     catagory = session.query(Catagory).filter_by(id=catagory_id).one()
     catagories = session.query(Catagory).all()
-    items = session.query(Item).all()
+    items = session.query(Item).filter_by(catagory_id=catagory.id).all()
+    item_length = len(items)
     return render_template('homepagesingle.html', catagory=catagory,
                            catagories=catagories, credentials=credentials,
-                           username=username, items=items)
+                           username=username, items=items,
+                           item_length=item_length)
 
 
 # Read an individual item

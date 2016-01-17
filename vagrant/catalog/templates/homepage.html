@@ -46,7 +46,7 @@
         {% endif %}
         <ul class="list-no-marks left10">
           {% for i in items %}
-            <li class="click-list"><a href="{{url_for('read_item', item_id=i.id)}}">{{i.name}}</a> <i class="catagory-ref">({{i.catagory_id}})</i></li>
+            <li class="click-list"><a href="{{url_for('read_item', item_id=i.id)}}">{{i.name}}</a> <i class="catagory-ref">({{i.catagory_name}})</i></li>
           {% endfor %}
         </ul>
       </div>
