@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database_setup import Base, Catagory, Item
+from database_setup import Base, Category, Item
 
 engine = create_engine('sqlite:///itemlist.db')
 # Bind the engine to the metadata of the Base class so that the
@@ -19,7 +19,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Deletes all the old data from the database
-catagories = session.query(Catagory).all()
+catagories = session.query(Category).all()
 for c in catagories:
     session.delete(c)
     session.commit()
@@ -30,13 +30,13 @@ for i in items:
     session.commit()
 
 # Items for Soccer
-catagory1 = Catagory(name="Soccer")
+category1 = Category(name="Soccer")
 
-session.add(catagory1)
+session.add(category1)
 session.commit()
 
 item1 = Item(name="Soccer ball", description="A ball for kicking around",
-             catagory=catagory1)
+             category=category1)
 
 session.add(item1)
 session.commit()
@@ -44,80 +44,80 @@ session.commit()
 
 item1 = Item(name="Soccer cleats",
              description="Gives optimum grip when running around a field",
-             catagory=catagory1)
+             category=category1)
 
 session.add(item1)
 session.commit()
 
 
 # Items for Snowboarding
-catagory1 = Catagory(name="Snowboarding")
+category1 = Category(name="Snowboarding")
 
-session.add(catagory1)
+session.add(category1)
 session.commit()
 
 
 item1 = Item(name="Snowboard",
              description="The bread and butter of the sport. The board you ride as you go down the mountains",  # noqa
-             catagory=catagory1)
+             category=category1)
 
 session.add(item1)
 session.commit()
 
 item1 = Item(name="Goggles",
              description="Protects the user from so much in life, the refelction of the sun and the ice and you shred like a madman down the slopes",  # noqa
-             catagory=catagory1)
+             category=category1)
 
 session.add(item1)
 session.commit()
 
 
 # Items for Basketball
-catagory1 = Catagory(name="Basketball")
+category1 = Category(name="Basketball")
 
-session.add(catagory1)
+session.add(category1)
 session.commit()
 
 
 # Items for Baseball
-catagory1 = Catagory(name="Baseball")
+category1 = Category(name="Baseball")
 
-session.add(catagory1)
+session.add(category1)
 session.commit()
 
 
 # Items for Frisbee
-catagory1 = Catagory(name="Frisbee")
+category1 = Category(name="Frisbee")
 
-session.add(catagory1)
+session.add(category1)
 session.commit()
 
 
 # Items for Rockclimbing
-catagory1 = Catagory(name="Rockclimbing")
+category1 = Category(name="Rockclimbing")
 
-session.add(catagory1)
+session.add(category1)
 session.commit()
 
 
 # Items for Foosball
-catagory1 = Catagory(name="Foosball")
+category1 = Category(name="Foosball")
 
-session.add(catagory1)
+session.add(category1)
 session.commit()
 
 
 # Items for Skating
-catagory1 = Catagory(name="Skating")
+category1 = Category(name="Skating")
 
-session.add(catagory1)
+session.add(category1)
 session.commit()
 
 
 # Items for Hockey
-catagory1 = Catagory(name="Hockey")
+category1 = Category(name="Hockey")
 
-session.add(catagory1)
+session.add(category1)
 session.commit()
 
 print "added items!"

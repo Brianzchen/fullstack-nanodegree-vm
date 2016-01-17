@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask import session as login_session, flash, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Catagory, Item, User
+from database_setup import Base, Category, Item, User
 import random
 import string
 # Imports for loggin in
@@ -59,27 +59,27 @@ def getUserID(email):
 def home_page():
     credentials = login_session.get('credentials')
     username = login_session.get('username')
-    catagories = session.query(Catagory).all()
+    catagories = session.query(Category).all()
     items = session.query(Item).all()
     for i in items:
         for c in catagories:
-            if i.catagory_id == c.id:
-                i.catagory_name = c.name
+            if i.category_id == c.id:
+                i.category_name = c.name
     return render_template('homepage.html', credentials=credentials,
                            username=username, catagories=catagories,
                            items=items)
 
 
-# For vewing items in each catagory
-@app.route('/<int:catagory_id>/')
-def home_page_single(catagory_id):
+# For vewing items in each category
+@app.route('/<int:category_id>/')
+def home_page_single(category_id):
     credentials = login_session.get('credentials')
     username = login_session.get('username')
-    catagory = session.query(Catagory).filter_by(id=catagory_id).one()
-    catagories = session.query(Catagory).all()
-    items = session.query(Item).filter_by(catagory_id=catagory.id).all()
+    category = session.query(Category).filter_by(id=category_id).one()
+    catagories = session.query(Category).all()
+    items = session.query(Item).filter_by(category_id=category.id).all()
     item_length = len(items)
-    return render_template('homepagesingle.html', catagory=catagory,
+    return render_template('homepagesingle.html', category=category,
                            catagories=catagories, credentials=credentials,
                            username=username, items=items,
                            item_length=item_length)
@@ -104,7 +104,7 @@ def read_item(item_id):
 def add_item():
     credentials = login_session.get('credentials')
     username = login_session.get('username')
-    catagories = session.query(Catagory).all()
+    catagories = session.query(Category).all()
     if login_session.get('credentials') is None:
         return redirect('/')
     return render_template('additem.html', credentials=credentials,
@@ -119,7 +119,7 @@ def newItem():
     if request.method == 'POST':
         newItem = Item(name=request.form['name'], description=request.form[
                        'description'],
-                       catagory_id=request.form['catagory_id'],
+                       category_id=request.form['category_id'],
                        user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
@@ -201,16 +201,16 @@ def delete_item(item_id):
 
 # Routes for JSONify requests
 # ---------------------------------------------------------------------------
-# Looking up the JSON for every item in a catagory
-@app.route('/<int:catagory_id>/items/JSON')
-def catagoryItemJSON(catagory_id):
-    catagory = session.query(Catagory).filter_by(id=catagory_id).one()
-    items = session.query(Item).filter_by(catagory_id=catagory.id).all()
+# Looking up the JSON for every item in a category
+@app.route('/<int:category_id>/items/JSON')
+def categoryItemJSON(category_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    items = session.query(Item).filter_by(category_id=category.id).all()
     return jsonify(Item=[i.serialize for i in items])
 
 
 # Looking up a single item
-@app.route('/catagory/item/<int:item_id>/JSON')
+@app.route('/category/item/<int:item_id>/JSON')
 def ItemJSON(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)

@@ -22,14 +22,14 @@
       <div class="col-5">
         <h2 class="left10">Catagories</h2>
         <ul class="list-no-marks left10">
-          {% for catagory in catagories %}
-            <li class="click-list"><a href="{{url_for('home_page_single', catagory_id = catagory.id)}}">{{catagory.name}}</a></li>
+          {% for category in catagories %}
+            <li class="click-list"><a href="{{url_for('home_page_single', category_id = category.id)}}">{{category.name}}</a></li>
           {% endfor %}
         </ul>
       </div>
 
       <div class="col-7 border-left">
-        <h2 class="left10">{{catagory.name}} Items ({{item_length}} Items)</h2>
+        <h2 class="left10">{{category.name}} Items ({{item_length}} Items)</h2>
         {% if credentials != None %}
           <a href="{{url_for('add_item')}}" class="left10">Add an item</a>
         {% endif %}

@@ -16,3 +16,11 @@ the database with the command "python database_setup.py" followed by
 to play around with
 5. Finally you can run "python application.py" and in your browser navigate to
 localhost:8000/ to run the hosted website
+
+### How to JSONify
+
+If you the data to be shown as json text, simply navigate to either of the following:
+localhost:8000/<catagory-id>/items/JSON
+or
+localhost:8000/catagory/item/<item-id>/JSON
+replacing <catagory-id> or <item-id> with the id of your desired category or id

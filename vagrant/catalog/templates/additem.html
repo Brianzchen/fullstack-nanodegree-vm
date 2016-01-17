@@ -22,8 +22,8 @@
         <p class="col-12">Name: <input name="name" type="text" required></p>
         <p class="col-12">Description: <br><textarea name="description" rows="4" cols="50" required></textarea></p>
         <p>
-          Catagory:
-          <select name="catagory_id">
+          Category:
+          <select name="category_id">
             {% for c in catagories %}
               <option value="{{c.id}}">{{c.name}}</option>
             {% endfor %}
