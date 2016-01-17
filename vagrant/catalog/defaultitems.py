@@ -19,8 +19,8 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Deletes all the old data from the database
-catagories = session.query(Category).all()
-for c in catagories:
+categories = session.query(Category).all()
+for c in categories:
     session.delete(c)
     session.commit()
 

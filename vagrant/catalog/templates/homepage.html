@@ -31,9 +31,9 @@
 
     <main class="margin main-div row80">
       <div class="col-5">
-        <h2 class="left10">Catagories</h2>
+        <h2 class="left10">Categories</h2>
         <ul class="list-no-marks left10">
-          {% for category in catagories %}
+          {% for category in categories %}
             <li class="click-list"><a href="{{url_for('home_page_single', category_id = category.id)}}">{{category.name}}</a></li>
           {% endfor %}
         </ul>

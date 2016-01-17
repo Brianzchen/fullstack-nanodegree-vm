@@ -59,14 +59,14 @@ def getUserID(email):
 def home_page():
     credentials = login_session.get('credentials')
     username = login_session.get('username')
-    catagories = session.query(Category).all()
+    categories = session.query(Category).all()
     items = session.query(Item).all()
     for i in items:
-        for c in catagories:
+        for c in categories:
             if i.category_id == c.id:
                 i.category_name = c.name
     return render_template('homepage.html', credentials=credentials,
-                           username=username, catagories=catagories,
+                           username=username, categories=categories,
                            items=items)
 
 
@@ -76,11 +76,11 @@ def home_page_single(category_id):
     credentials = login_session.get('credentials')
     username = login_session.get('username')
     category = session.query(Category).filter_by(id=category_id).one()
-    catagories = session.query(Category).all()
+    categories = session.query(Category).all()
     items = session.query(Item).filter_by(category_id=category.id).all()
     item_length = len(items)
     return render_template('homepagesingle.html', category=category,
-                           catagories=catagories, credentials=credentials,
+                           categories=categories, credentials=credentials,
                            username=username, items=items,
                            item_length=item_length)
 
@@ -106,12 +106,12 @@ def read_item(item_id):
 def add_item():
     credentials = login_session.get('credentials')
     username = login_session.get('username')
-    catagories = session.query(Category).all()
+    categories = session.query(Category).all()
     if login_session.get('credentials') is None:
         flash("Please login before you add items")
         return redirect(url_for('login'))
     return render_template('additem.html', credentials=credentials,
-                           username=username, catagories=catagories)
+                           username=username, categories=categories)
 
 
 # Post request for adding an item
